@@ -1,44 +1,42 @@
+// Dependencies
 var express = require("express");
-var session = require('express-session');
+
+const logger = require('morgan');
+
 var app = express();
 var bodyParser = require("body-parser");
-var db = require("./models");
-let cors = require('cors');
-// Set Handlebars.
+// If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
+let routes = require('./routes/api-routes.js');
 var exphbs = require("express-handlebars");
-var PORT = process.env.PORT || 8080;
-
-let articleRoutes = require('./routes/api-routes.js');
-
-app.use(session({
-  secret: process.env.SESSIONSECRET || 'cat',
-  resave: false,
-  saveUninitialized: true
-}));
-
-function userSetup(req, res, next) {
-  if (!req.session.user) {
-    req.session.user = {};
-    req.session.user.loggedIn = false;
-  }
-  next();
-}
-
+var PORT = process.env.PORT || 3000;
+// var path = require('path');
+var mongojs = require("mongojs");
 // Serve static content for the app from the "public" directory in the application directory.
-app.use(express.static("public"));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(cors());
-app.use(userSetup);
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+// Initialize Express
+const mongoose = require('mongoose');
+
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+
+mongoose.Promise = Promise;
+mongoose.connect(MONGODB_URI);
+
 app.set("view engine", "handlebars");
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.use(express.static("public"));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(routes);
+app.use(logger('dev'));
 
 
 
-require("./routes/api-routes.js")(app);
+// This makes sure that any errors are logged if mongodb runs into an issue
+// db.on("error", function (error) {
+//   console.log("Database Error:", error);
+// });
 
-db.sequelize.sync({ force: false }).then(function() {
-  app.listen(PORT, function() {
-    console.log("App listening on PORT " + PORT);
-  });
+// Set the app to listen on port 3000
+app.listen(PORT, function () {
+  console.log("App running on port 3000!");
 });
+
