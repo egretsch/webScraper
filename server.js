@@ -13,17 +13,11 @@ var PORT = process.env.PORT || 3000;
 var mongojs = require("mongojs");
 // Serve static content for the app from the "public" directory in the application directory.
 // Initialize Express
-const mongoose = require('mongoose');
-
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
-
-mongoose.Promise = Promise;
-mongoose.connect(MONGODB_URI);
 
 app.set("view engine", "handlebars");
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.use(express.static("public"));
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }, { useNewUrlParser: true } ));
 app.use(bodyParser.json());
 app.use(routes);
 app.use(logger('dev'));

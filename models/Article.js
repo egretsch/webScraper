@@ -2,14 +2,14 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var articleSchema = new Schema({
-  headline: {
+  
+  title: {
     type: String,
     unique: true
   },
+  img:String,
   summary: String,
-  storyUrl: String,
-  imgUrl: String,
-  byLine: String,
+  link:  String,
   saved: {
     type: Boolean,
     default: false
@@ -22,4 +22,6 @@ var articleSchema = new Schema({
   ]
 });
 
-var Article = module.exports = mongoose.model('Article', articleSchema);
+var Article =  mongoose.model('Article', articleSchema);
+
+module.exports = Article;
