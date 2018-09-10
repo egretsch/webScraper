@@ -11,3 +11,36 @@ body {
   background-color: rgb(255, 0, 0);
   /* border: 4px purple solid; */
 }
+
+.storyPanel {
+  border: solid #1955A5;
+  margin: 15px;
+  border-radius: 10px;
+  overflow: auto;
+}
+
+.imgBox {
+  margin: 5px;
+  float: left;
+
+}
+
+.storyLink {
+  text-decoration: none;
+  color: tan;
+}
+
+.storyLink:hover {
+  text-decoration: none;
+  color: tan;
+}
+.storySummary {
+  color: white;
+}
+
+.storyButton {
+  margin: 5px 0 6px 5px;
+  color: whitesmoke;
+  background-color: #1955A5;
+  border: red .5px solid;
+}

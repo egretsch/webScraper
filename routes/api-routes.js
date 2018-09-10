@@ -17,7 +17,10 @@ mongoose.connect(MONGODB_URI);
 // Create all our routes and set up logic within those routes where required.
 router.get("/", function (req, res) {
   
-  res.render("index", {});
+  db.Article
+    .find({})
+    .then(articles => res.render('index', { articles }))
+    .catch(err => res.json(err));
   });
 
 
