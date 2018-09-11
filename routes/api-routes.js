@@ -23,6 +23,13 @@ router.get("/", function (req, res) {
     .catch(err => res.json(err));
   });
 
+//get route to update 'saved' boolean to true
+router.get('/save/:id', (req, res) => {
+  db.Article
+    .update({ _id: req.params.id }, { $set: { saved: true }})
+    .then(result => res.redirect('/'))
+    .catch(err => res.json(err));
+});
 
 router.get("/savedarticle", function (req, res) {
   // console.log(res);
