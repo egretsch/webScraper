@@ -32,8 +32,13 @@ router.get('/save/:id', (req, res) => {
 });
 
 router.get("/savedarticle", function (req, res) {
-  // console.log(res);
-  res.render("savedArticle", {});
+  console.log("i was clicked")
+  db.Article
+    .find({})
+    .then(articles => res.render('savedArticle', { articles }))
+    .catch(err => res.json(err));
+  
+  
 
 });
 
@@ -100,6 +105,16 @@ router.get("/scraper", function (req, res) {
   // })
   // .catch(err => console.log(err));
 });
+
+router.delete('/deleteArticle/:id', function (req, res) {
+  console.log(" iwas deleted2")
+  db.Article
+    .remove({ _id: req.params.id })
+    .then(result => res.json(result))
+    .catch(err => res.json(err));
+  console.log(" iwas deleted3")
+});
+
 
 module.exports = router;
 
