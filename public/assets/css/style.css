@@ -44,3 +44,11 @@ body {
   background-color: #1955A5;
   border: red .5px solid;
 }
+.modalStyle {
+  background-color: rgb(51, 51, 51);
+}
+
+.modal-headerstyle {
+  background-color: #1955A5;
+  color: white;
+}

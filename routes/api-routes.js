@@ -43,12 +43,7 @@ router.get("/savedarticle", function (req, res) {
 });
 
 router.get("/scraper", function (req, res) {
-  console.log("/scraper was hit")
-  // db.Article
-  //   .find({})
-  //   .then((data) => {
-  //     let savedHeadlines = data.map(article => article.title);
-  //     .then(function () {
+  
   request("http://www.foxnews.com/world.html", function (err, response, html) {
     console.log("inside of request");
     var newsArray = [];
@@ -96,27 +91,19 @@ router.get("/scraper", function (req, res) {
     });
    newFunction(newsArray); 
   });
-    
-
-  
-  // })
-  //   .catch(err => console.log(err)); //end of rp method
-
-  // })
-  // .catch(err => console.log(err));
 });
 
 router.delete('/deleteArticle/:id', function (req, res) {
-  console.log(" iwas deleted2")
+  
   db.Article
     .remove({ _id: req.params.id })
     .then(result => res.json(result))
     .catch(err => res.json(err));
-  console.log(" iwas deleted3")
+  
 });
 //get route to retrieve all notes for a particlular article
 router.get('/getComment/:id', function (req, res) {
-  console.log("get all comments" + req.params.id)
+  
   db.Article
     .findOne({ _id: req.params.id })
     .populate('Comments')
@@ -128,7 +115,7 @@ router.get('/getComment/:id', function (req, res) {
 
 //get route to return a single note to view it
 router.get('/getSingleComment/:id', function (req, res) {
-  console.log("get one comment")
+  
   db.Comment
     .findOne({ _id: req.params.id })
     .then(result => {
@@ -158,6 +145,7 @@ router.post('/createComment', function (req, res) {
 //post route to delete a note
 router.post('/deleteComment', (req, res) => {
   let { articleId, commentId } = req.body;
+  console.log(commentId)
   db.Comment
     .remove({ _id: commentId })
     .then(result => res.json(result))

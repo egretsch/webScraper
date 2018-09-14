@@ -4,7 +4,7 @@ $(document).ready(function () {
     //click event to save an article
     $('.saveArticle').on('click', function (e) {
         let articleId = $(this).data('id');
-        console.log(articleId)
+
         $.ajax({
             url: '/save/' + articleId,
             type: 'GET',
@@ -22,13 +22,13 @@ $(document).ready(function () {
         e.preventDefault();
         $.get("/scraper", function (data) {
             window.location.href = "/";
-            console.log("/scraper get worked")
+
         });
     });
 
 
     $('#home').on('click', function (e) {
-        console.log("/scraper was click")
+
         e.preventDefault();
         $.get("/", function (data) {
             window.location.href = "/";
@@ -36,7 +36,6 @@ $(document).ready(function () {
     });
 
     $('.deleteArticle').on('click', function (e) {
-        console.log(" iwas deleted")
         e.preventDefault();
         let id = $(this).data('id');
         $.ajax({
@@ -52,7 +51,6 @@ $(document).ready(function () {
     });
 
     $('.addNote').on('click', function (e) {
-        console.log("addnote clicked")
         $('#noteArea').empty();
         $('#noteTitleEntry, #noteBodyEntry').val('');
         let id = $(this).data('id');
@@ -61,7 +59,6 @@ $(document).ready(function () {
             url: '/getComment/' + id,
             type: 'GET',
             success: function (data) {
-                console.log(data)
                 $.each(data.Comments, function (i, item) {
                     showComment(item, id);
                 });
@@ -116,12 +113,13 @@ $(document).ready(function () {
 
     //function to display notes in notemodal
     function showComment(element, articleId) {
+        console.log(element)
         let $title = $('<p>')
             .text(element.title)
             .addClass('noteTitle');
         let $deleteButton = $('<button>')
             .text('X')
-            .addClass('deleteNote');
+            .addClass('deleteNote storyButton');
         let $comment = $('<div>')
             .append($deleteButton, $title)
             .attr('data-comment-id', element._id)
@@ -133,9 +131,11 @@ $(document).ready(function () {
         e.stopPropagation();
         let thisItem = $(this);
         let ids = {
-            noteId: $(this).parent().data('note-id'),
+            commentId: $(this).parent().data('Comments-id'),
             articleId: $(this).parent().data('article-id')
         };
+        console.log(thisItem + 1)
+        console.log(ids + 2)
 
         $.ajax({
             url: '/deleteComment',
