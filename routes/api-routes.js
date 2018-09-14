@@ -32,7 +32,7 @@ router.get('/save/:id', (req, res) => {
 });
 
 router.get("/savedarticle", function (req, res) {
-  console.log("i was clicked")
+  
   db.Article
     .find({})
     .then(articles => res.render('savedArticle', { articles }))
@@ -45,11 +45,11 @@ router.get("/savedarticle", function (req, res) {
 router.get("/scraper", function (req, res) {
   
   request("http://www.foxnews.com/world.html", function (err, response, html) {
-    console.log("inside of request");
+    
     var newsArray = [];
     var $ = cheerio.load(html);
     $(".article").each(function (i, element) {
-      // console.log("inside of scaper");
+
       var newsObj = {};
       var title = $(element).children().find($(".title")).find($("a")).text();
       var link = $(element).children().find($(".title")).find($("a")).attr("href");
@@ -84,12 +84,12 @@ router.get("/scraper", function (req, res) {
         .then(function (dbArticle) {
           // View the added result in the console
           res.json(dbArticle);
-          console.log(dbArticle);
+
         })
 
 
     });
-   newFunction(newsArray); 
+
   });
 });
 
@@ -108,7 +108,7 @@ router.get('/getComment/:id', function (req, res) {
     .findOne({ _id: req.params.id })
     .populate('Comments')
     .then(results => {
-      console.log(results)
+
       res.json(results)})
     .catch(err => res.json(err));
 });
@@ -119,7 +119,6 @@ router.get('/getSingleComment/:id', function (req, res) {
   db.Comment
     .findOne({ _id: req.params.id })
     .then(result => {
-      console.log(result)
       res.json(result)}) 
     .catch(err => res.json(err));
 });
@@ -155,7 +154,5 @@ router.post('/deleteComment', (req, res) => {
 module.exports = router;
 
 
-function newFunction(newsArray) {
-  console.log(newsArray);
-}
+
 

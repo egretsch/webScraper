@@ -18,7 +18,7 @@ $(document).ready(function () {
     });//end of #saveArticle click event
 
     $('#scrape').on('click', function (e) {
-        console.log("/scraper was click")
+        
         e.preventDefault();
         $.get("/scraper", function (data) {
             window.location.href = "/";
@@ -113,7 +113,7 @@ $(document).ready(function () {
 
     //function to display notes in notemodal
     function showComment(element, articleId) {
-        console.log(element)
+        
         let $title = $('<p>')
             .text(element.title)
             .addClass('noteTitle');
@@ -164,7 +164,7 @@ $(document).ready(function () {
                 $('#noteBodyEntry').val(comment.body);
             },
             error: function (error) {
-                console.log(error);
+                
                 showErrorModal(error);
             }
         });
