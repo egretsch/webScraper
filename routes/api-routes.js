@@ -114,7 +114,55 @@ router.delete('/deleteArticle/:id', function (req, res) {
     .catch(err => res.json(err));
   console.log(" iwas deleted3")
 });
+//get route to retrieve all notes for a particlular article
+router.get('/getComment/:id', function (req, res) {
+  console.log("get all comments" + req.params.id)
+  db.Article
+    .findOne({ _id: req.params.id })
+    .populate('Comments')
+    .then(results => {
+      console.log(results)
+      res.json(results)})
+    .catch(err => res.json(err));
+});
 
+//get route to return a single note to view it
+router.get('/getSingleComment/:id', function (req, res) {
+  console.log("get one comment")
+  db.Comment
+    .findOne({ _id: req.params.id })
+    .then(result => {
+      console.log(result)
+      res.json(result)}) 
+    .catch(err => res.json(err));
+});
+
+//post route to create a new note in the database
+router.post('/createComment', function (req, res) {
+  let { title, body, articleId } = req.body;
+  let comment = {
+    title,
+    body
+  };
+  db.Comment
+    .create(comment)
+    .then(result => {
+      db.Article
+        .findOneAndUpdate({ _id: articleId }, { $push: { Comments: result._id } }, { new: true })//saving reference to note in corresponding article
+        .then(data => res.json(result))
+        .catch(err => res.json(err));
+    })
+    .catch(err => res.json(err));
+});
+
+//post route to delete a note
+router.post('/deleteComment', (req, res) => {
+  let { articleId, commentId } = req.body;
+  db.Comment
+    .remove({ _id: commentId })
+    .then(result => res.json(result))
+    .catch(err => res.json(err));
+});
 
 module.exports = router;
 

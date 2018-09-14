@@ -26,13 +26,6 @@ $(document).ready(function () {
         });
     });
 
-    // $('#savedArticles').on('click', function (e) {
-    //     console.log("/scraper was click")
-    //     e.preventDefault();
-    //     $.get("/savedarticle", function (data) {
-    //         // window.location.href = "/savedarticle";
-    //     });
-    // });
 
     $('#home').on('click', function (e) {
         console.log("/scraper was click")
@@ -57,5 +50,124 @@ $(document).ready(function () {
             }
         });
     });
+
+    $('.addNote').on('click', function (e) {
+        console.log("addnote clicked")
+        $('#noteArea').empty();
+        $('#noteTitleEntry, #noteBodyEntry').val('');
+        let id = $(this).data('id');
+        $('#submitNote, #noteBodyEntry').attr('data-id', id);
+        $.ajax({
+            url: '/getComment/' + id,
+            type: 'GET',
+            success: function (data) {
+                console.log(data)
+                $.each(data.Comments, function (i, item) {
+                    showComment(item, id);
+                });
+                $('#noteModal').modal('show');
+            },
+            error: function (error) {
+                showErrorModal(error);
+            }
+        });
+    }); 
+
+    $('#submitNote').on('click', function (e) {
+        e.preventDefault();
+        sendComment($(this));
+    });//end of #submitNote click event
+
+    //keypress event to allow user to submit note with enter key
+    $('#noteBodyEntry').on('keypress', function (e) {
+        if (e.keyCode === 13) {
+            sendComment($(this));
+        }
+    });//end of #noteBodyEntry keypress(enter) event
+
+    //function to post a note to server
+    function sendComment(element) {
+        let comment= {};
+        comment.articleId = $(element).attr('data-id'),
+        comment.title = $('#noteTitleEntry').val().trim();
+        comment.body = $('#noteBodyEntry').val().trim();
+        if (comment.title && comment.body) {
+            $.ajax({
+                url: '/createComment',
+                type: 'POST',
+                data: comment,
+                success: function (response) {
+                    showComment(response, comment.articleId);
+                    $('#noteBodyEntry, #noteTitleEntry').val('');
+                },
+                error: function (error) {
+                    showErrorModal(error);
+                }
+            });
+        }
+    }//end of sendNote function
+
+
+    //function to display error modal on ajax error
+    function showErrorModal(error) {
+        $('#error').modal('show');
+    }
+
+
+    //function to display notes in notemodal
+    function showComment(element, articleId) {
+        let $title = $('<p>')
+            .text(element.title)
+            .addClass('noteTitle');
+        let $deleteButton = $('<button>')
+            .text('X')
+            .addClass('deleteNote');
+        let $comment = $('<div>')
+            .append($deleteButton, $title)
+            .attr('data-comment-id', element._id)
+            .attr('data-article-id', articleId)
+            .addClass('note')
+            .appendTo('#noteArea');
+    }//end of showNote function
+    $(document).on('click', '.deleteNote', function (e) {
+        e.stopPropagation();
+        let thisItem = $(this);
+        let ids = {
+            noteId: $(this).parent().data('note-id'),
+            articleId: $(this).parent().data('article-id')
+        };
+
+        $.ajax({
+            url: '/deleteComment',
+            type: 'POST',
+            data: ids,
+            success: function (response) {
+                thisItem.parent().remove();
+            },
+            error: function (error) {
+                showErrorModal(error);
+            }
+        });
+    });//end of .deleteNote click event
+
+    //click event to retrieve the title and body of a single note
+    //and populate the note modal inputs with it
+    $(document).on('click', '.note', function (e) {
+        e.stopPropagation();
+        let id = $(this).data('comment-id');
+
+        $.ajax({
+            url: '/getSingleComment/' + id,
+            type: 'GET',
+            success: function (comment) {
+                $('#noteTitleEntry').val(comment.title);
+                $('#noteBodyEntry').val(comment.body);
+            },
+            error: function (error) {
+                console.log(error);
+                showErrorModal(error);
+            }
+        });
+    }); //end of .note click event
 
 });//end of document ready function
