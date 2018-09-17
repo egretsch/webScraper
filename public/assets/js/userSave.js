@@ -113,13 +113,17 @@ $(document).ready(function () {
 
     //function to display notes in notemodal
     function showComment(element, articleId) {
-        
+      
         let $title = $('<p>')
             .text(element.title)
             .addClass('noteTitle');
         let $deleteButton = $('<button>')
             .text('X')
             .addClass('deleteNote storyButton');
+            $deleteButton.attr({
+                "data-artId" : articleId,
+                "data-comment": element._id
+            })
         let $comment = $('<div>')
             .append($deleteButton, $title)
             .attr('data-comment-id', element._id)
@@ -130,12 +134,13 @@ $(document).ready(function () {
     $(document).on('click', '.deleteNote', function (e) {
         e.stopPropagation();
         let thisItem = $(this);
+        
+
         let ids = {
-            commentId: $(this).parent().data('Comments-id'),
-            articleId: $(this).parent().data('article-id')
-        };
-        console.log(thisItem + 1)
-        console.log(ids + 2)
+            commentId: $(this)[0].dataset.comment,
+            articleId: $(this)[0].dataset.artid
+        }
+        
 
         $.ajax({
             url: '/deleteComment',

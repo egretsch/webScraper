@@ -144,7 +144,7 @@ router.post('/createComment', function (req, res) {
 //post route to delete a note
 router.post('/deleteComment', (req, res) => {
   let { articleId, commentId } = req.body;
-  console.log(commentId)
+ 
   db.Comment
     .remove({ _id: commentId })
     .then(result => res.json(result))
